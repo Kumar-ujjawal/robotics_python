@@ -95,7 +95,7 @@ while running:
             draw_manipulator(JOINT_ANGLE_1, JOINT_ANGLE_2)
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                JOINT_ANGLE_1, JOINT_ANGLE_2 = 0, 0  # Reset joint angles to default position
+                JOINT_ANGLE_1, JOINT_ANGLE_2 = 0,0  # Reset joint angles to default position
                 draw_manipulator(JOINT_ANGLE_1, JOINT_ANGLE_2)
 
     # Draw the manipulator
