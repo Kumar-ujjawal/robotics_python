@@ -57,6 +57,34 @@ for i, joint in enumerate(controllable_joints):
     slider = p.addUserDebugParameter(f"{joint_names[i]}", lower_limit, upper_limit, initial_value)
     sliders.append(slider)
 
+
+
+# Add ball
+ball_radius = 0.05
+ball_position = [0.5, 0,  ball_radius]
+ball_shape = p.createCollisionShape(p.GEOM_SPHERE, radius=ball_radius)
+ball_visual = p.createVisualShape(p.GEOM_SPHERE, radius=ball_radius, rgbaColor=[1, 0, 0, 1])
+ballId = p.createMultiBody(baseMass=0.1, baseCollisionShapeIndex=ball_shape, baseVisualShapeIndex=ball_visual, basePosition=ball_position)
+
+# Setup camera
+def setup_camera():
+    camera_target_position = [0, 0, 0]
+    camera_distance = 1.5
+    camera_yaw = 50
+    camera_pitch = -35
+    view_matrix = p.computeViewMatrixFromYawPitchRoll(
+        cameraTargetPosition=camera_target_position,
+        distance=camera_distance,
+        yaw=camera_yaw,
+        pitch=camera_pitch,
+        roll=0,
+        upAxisIndex=2
+    )
+    proj_matrix = p.computeProjectionMatrixFOV(fov=60, aspect=1.0, nearVal=0.1, farVal=100.0)
+    return view_matrix, proj_matrix
+
+view_matrix, proj_matrix = setup_camera()
+
 # Main simulation loop
 try:
     while True:
@@ -101,6 +129,13 @@ try:
         print("Joint Velocities:", velocities)
         print("End Effector Position:", end_effector_pos)
         print("--------------------")
+
+        # Render the scene from the camera's perspective
+        width, height, rgbImg, depthImg, segImg = p.getCameraImage(
+            width=640, 
+            height=480,
+            viewMatrix=view_matrix,
+            projectionMatrix=proj_matrix)
 
         time.sleep(1.0 / 240.0)
 
