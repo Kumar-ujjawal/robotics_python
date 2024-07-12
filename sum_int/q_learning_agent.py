@@ -47,3 +47,6 @@ class QLearningAgent:
         td_target = reward + self.gamma * best_next_q
         td_error = td_target - current_q
         self.q_table[state][action] = current_q + self.lr * td_error
+
+    def decay_epsilon(self, decay_rate=0.995):
+        self.epsilon *= decay_rate
