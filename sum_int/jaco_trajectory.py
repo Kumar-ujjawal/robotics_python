@@ -38,7 +38,7 @@ def inverse_kinematics(target_pos):
 
 # Set up the trajectory
 start_pos = get_end_effector_pos()
-end_pos = [start_pos[0] + 0.3, start_pos[1] + 0.2, start_pos[2] + 0.1]  # Move 30cm in x, 20cm in y, 10cm in z
+end_pos =   [2.1,1.1,1.1]                   #[start_pos[0] , start_pos[1], start_pos[2]]  # Move 30cm in x, 20cm in y, 10cm in z
 trajectory_time = 5.0  # seconds
 steps = 240 * trajectory_time  # 240 Hz for 5 seconds
 

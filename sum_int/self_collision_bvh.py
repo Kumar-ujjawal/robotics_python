@@ -2,6 +2,7 @@ import pybullet as p
 import pybullet_data
 import numpy as np
 import itertools
+import csv
 
 class BoundingVolume:
     def __init__(self, center, radius):
@@ -17,7 +18,7 @@ class BVHNode:
         self.right = right
 
 def construct_bvh_from_urdf(urdf_file):
-    physicsClient = p.connect(p.DIRECT)
+    physicsClient = p.connect(p.GUI)
     p.setAdditionalSearchPath(pybullet_data.getDataPath())
     robot_id = p.loadURDF(urdf_file, useFixedBase=True)
 
@@ -104,8 +105,17 @@ def find_self_collisions(urdf_file, num_samples=1000):
     p.disconnect()
     return all_collisions
 
+def save_collisions_to_csv(collisions, filename):
+    with open(filename, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(['Colliding Links', 'Joint Angles'])
+        for collision, joint_angles in collisions.items():
+            writer.writerow([str(collision), str(joint_angles)])
+
 if __name__ == "__main__":
     urdf_file = r"kinova-ros/kinova_description/urdf/j2s7s300_standalone.urdf"
+    output_file = "self_collisions.csv"
+    
     try:
         collisions = find_self_collisions(urdf_file)
         
@@ -115,6 +125,9 @@ if __name__ == "__main__":
                 print(f"Colliding links: {collision}")
                 print(f"Joint angles: {joint_angles}")
                 print()
+            
+            save_collisions_to_csv(collisions, output_file)
+            print(f"Collision data saved to {output_file}")
         else:
             print("No self-collisions detected.")
     except Exception as e:
