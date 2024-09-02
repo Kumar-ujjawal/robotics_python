@@ -25,7 +25,7 @@ git clone https://github.com/Kumar-ujjawal/robotics_python.git
 ```
 
 ## Install the Required Dependencies
-Make sure you have Python 3.x installed. Then install the required Python libraries:
+Make sure you have Python 3.10 installed. Then install the required Python libraries:
 
 
 ```
