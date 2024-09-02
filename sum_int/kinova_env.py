@@ -119,7 +119,7 @@ class KinovaEnv:
         distance_reward = self.last_distance - current_distance
 
         # Smooth motion reward
-        smoothness_reward = -np.sum(np.square(current_joint_velocities - self._get_joint_velocities()))
+        smoothness_reward = - np.sum(np.square(current_joint_velocities - self._get_joint_velocities()))
 
         # Joint limit penalty
         joint_limit_penalty = sum(min(abs(pos - limit[0]), abs(pos - limit[1])) for pos, limit in zip(current_joint_positions, self.joint_limits))
@@ -146,10 +146,10 @@ class KinovaEnv:
         total_reward = (
             w1 * distance_reward +
             w2 * smoothness_reward +
-            w3 * joint_limit_penalty +
-            w4 * obstacle_penalty +
+            -2*w3 * joint_limit_penalty +
+            -2*w4 * obstacle_penalty +
             w5 * task_reward +
-            w6 * energy_penalty +
+           -2* w6 * energy_penalty +
             w7 * orientation_reward +
             w8 * path_length_reward
         )
