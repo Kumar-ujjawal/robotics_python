@@ -36,39 +36,60 @@ def inverse_kinematics(target_pos):
     joint_poses = p.calculateInverseKinematics(robotId, num_joints - 1, target_pos)
     return joint_poses[:len(controllable_joints)]
 
-# Set up the trajectory
-start_pos = get_end_effector_pos()
-end_pos =   [2.1,1.1,1.1]                   #[start_pos[0] , start_pos[1], start_pos[2]]  # Move 30cm in x, 20cm in y, 10cm in z
-trajectory_time = 5.0  # seconds
-steps = 240 * trajectory_time  # 240 Hz for 5 seconds
+# Function to move the robot arm to a target position
+def move_to_target(start_pos, end_pos, trajectory_time):
+    steps = int(240 * trajectory_time)  # 240 Hz for the given time
+    for t in range(steps):
+        # Calculate the current target position along the straight line
+        alpha = t / steps
+        current_target = [
+            start_pos[0] + alpha * (end_pos[0] - start_pos[0]),
+            start_pos[1] + alpha * (end_pos[1] - start_pos[1]),
+            start_pos[2] + alpha * (end_pos[2] - start_pos[2])
+        ]
 
-# Simulate the robot arm movement
-for t in range(int(steps)):
-    # Calculate the current target position along the straight line
-    alpha = t / steps
-    current_target = [
-        start_pos[0] + alpha * (end_pos[0] - start_pos[0]),
-        start_pos[1] + alpha * (end_pos[1] - start_pos[1]),
-        start_pos[2] + alpha * (end_pos[2] - start_pos[2])
+        # Perform inverse kinematics
+        joint_poses = inverse_kinematics(current_target)
+
+        # Set the joint positions
+        for i, joint in enumerate(controllable_joints):
+            p.setJointMotorControl2(
+                bodyUniqueId=robotId,
+                jointIndex=joint,
+                controlMode=p.POSITION_CONTROL,
+                targetPosition=joint_poses[i],
+                force=100.0
+            )
+
+        p.stepSimulation()
+        time.sleep(1.0 / 240.0)
+
+# Main loop to handle multiple end positions
+def main():
+     
+    waypoints = [
+        [0.5337958105113186, -0.10650478491209342, 0.4985054933668144],
+        [0.5337958105113186, -0.10650478491209342, 0.4985054933668144],
+        [-0.0071203869026121025, 0.32445829567672363, 0.37930713793632564],
+        [0.29439394759070736, 0.4104775261153995, 0.8633216574635938]
     ]
 
-    # Perform inverse kinematics
-    joint_poses = inverse_kinematics(current_target)
+    # Time to spend moving between each waypoint
+    trajectory_time = 3.0  # seconds
 
-    # Set the joint positions
-    for i, joint in enumerate(controllable_joints):
-        p.setJointMotorControl2(
-            bodyUniqueId=robotId,
-            jointIndex=joint,
-            controlMode=p.POSITION_CONTROL,
-            targetPosition=joint_poses[i],
-            force=100.0
-        )
+    start_pos = get_end_effector_pos()
 
-    p.stepSimulation()
-    time.sleep(1.0 / 240.0)
+    for waypoint in waypoints:
+        print(f"Moving to waypoint: {waypoint}")
+        move_to_target(start_pos, waypoint, trajectory_time)
+        start_pos = waypoint  # Update start position for the next movement
 
-# Keep the GUI window open and maintain the final position
-while True:
-    p.stepSimulation()
-    time.sleep(1.0 / 240.0)
+    print("Finished moving through all waypoints")
+
+    # Keep the GUI window open and maintain the final position
+    while True:
+        p.stepSimulation()
+        time.sleep(1.0 / 240.0)
+
+if __name__ == "__main__":
+    main()

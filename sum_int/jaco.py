@@ -14,7 +14,7 @@ print(f"URDF path: {urdf_path}")
 
 # Load the plane and robot arm
 planeId = p.loadURDF("plane.urdf")
-robotId = p.loadURDF(urdf_path, [0, 0, 0.5], useFixedBase=True)
+robotId = p.loadURDF(urdf_path, [0, 0, 0], useFixedBase=True)
 
 # Get the joint indices for controllable joints
 jointIndices = []

@@ -1,0 +1,28 @@
+# Core Python Scientific Computing
+numpy==1.24.3
+scipy==1.10.1
+
+# Deep Learning Framework
+torch==2.0.1
+torchvision==0.15.2
+torchaudio==2.0.2
+
+# Reinforcement Learning and Simulation
+gym==0.26.2
+pybullet==3.2.5
+
+# Logging and Visualization
+tensorboardX==2.6
+matplotlib==3.7.1
+
+# Experiment Tracking
+wandb==0.15.3
+ptable==0.9.2  # Updated version
+
+# Additional Dependencies
+setuptools==67.7.2
+wheel==0.40.0
+
+# Install TensorBoard
+tensorboard==2.12.3
+protobuf<=3.20.3  # Important: Specific version to avoid compatibility issues

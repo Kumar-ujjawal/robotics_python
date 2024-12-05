@@ -1,3 +1,5 @@
 api.py
 .ipynb_checkpoints
 __pycache__
+sum_int/yolov8n-seg.pt
+motion.zip
